@@ -25,6 +25,9 @@ public class Hood extends SubsystemBase {
   
   }
 
+
+
+
   public void setState(HoodState state) {
         this.state = state;
       
@@ -35,11 +38,25 @@ public class Hood extends SubsystemBase {
 public Command setStateCommand(HoodState state) {
         return runOnce(() -> setState(state));}
 
- private void handleState() {
-
+    private void moveToPosition(double angleDeg) {
         hood.setControl(
-            new PositionDutyCycle(state.getAngleDeg()
-        ));
+            new PositionDutyCycle(angleDeg)
+        );}
+
+private void handleState() {
+  switch (state) {
+
+            case IDLE:
+            case LOW:
+            case MID:
+            case HIGH:
+                moveToPosition(state.getAngleDeg());
+                break;
+
+            default:
+                moveToPosition(0);
+                break;
+        }
     }
 
     @Override
